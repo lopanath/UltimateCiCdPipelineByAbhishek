@@ -70,20 +70,22 @@ pipeline {
     }
     stage('Update Deployment File') {
         environment {
-            GIT_REPO_NAME = "UltimateCiCdPipelineByAbhishek"
+            GIT_REPO_NAME = "UltimateCiCdPipelineByAbhishek-manifests"
             GIT_USER_NAME = "lopanath"
         }
         steps {
             withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
-                sh '''
+                sh """
                     git config user.email "lopanath003@gmail.com"
                     git config user.name "lopanath"
-                    BUILD_NUMBER=${BUILD_NUMBER}
-                    sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" UltimateCiCdPipelineByAbhishek-manifests/deployment.yml
-                    git add UltimateCiCdPipelineByAbhishek-manifests/deployment.yml
-                    git commit -m "Update deployment image to version ${BUILD_NUMBER}"
-                    git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:master
-                '''
+
+                    sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" deployment.yml
+
+                    git add deployment.yml
+                    git commit -m "Update deployment image to version ${BUILD_NUMBER}" || true
+
+                    git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME}.git HEAD:main
+                """
             }
         }
     }
