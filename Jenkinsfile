@@ -52,16 +52,21 @@ pipeline {
         REGISTRY_CREDENTIALS = credentials('docker_cred')
       }
       steps {
-        script {
-            sh 'docker build -t ${DOCKER_IMAGE} .'
-            def dockerImage = docker.image("${DOCKER_IMAGE}")
-            docker.withRegistry('https://index.docker.io/v1/', "docker_cred") {
-                dockerImage.push()
-                echo "Push completed"
+              withCredentials([usernamePassword(
+                  credentialsId: 'docker_cred',
+                  usernameVariable: 'DOCKER_USER',
+                  passwordVariable: 'DOCKER_PASS'
+              )]) {
 
-            }
-        }
-      }
+                  sh '''
+                      docker build -t ${DOCKER_IMAGE} .
+
+                      echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+
+                      docker push ${DOCKER_IMAGE}
+                  '''
+              }
+          }
     }
     stage('Update Deployment File') {
         environment {
