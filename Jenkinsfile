@@ -1,7 +1,7 @@
 pipeline {
     agent {
           node {
-              label 'docker-agent-java-git-maven'
+              label 'docker-agent-jenkins-java-git-maven-docker'
               }
         }
   stages {
