@@ -1,10 +1,9 @@
 pipeline {
-  agent {
-    docker {
-      image 'lopanath12345/jenkinsjavagitmaven:v1'
-      args '--user root -v /var/run/docker.sock:/var/run/docker.sock' // mount Docker socket to access the host's Docker daemon
-    }
-  }
+    agent {
+          node {
+              label 'docker-agent-java-git-maven'
+              }
+        }
   stages {
     stage('Checkout') {
       steps {
