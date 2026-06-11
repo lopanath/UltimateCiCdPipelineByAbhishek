@@ -28,6 +28,23 @@ pipeline {
 //         }
 //       }
 //     }
+    stage('Verify Artifact') {
+        steps {
+            sh '''
+                pwd
+                ls -la target
+            '''
+        }
+    }
+    stage('Docker Debug') {
+        steps {
+            sh '''
+                docker version
+                docker info
+                df -h
+            '''
+        }
+    }
     stage('Build and Push Docker Image') {
       environment {
         DOCKER_IMAGE = "lopanath12345/ultimate-cicd:${BUILD_NUMBER}"
